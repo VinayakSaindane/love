@@ -67,6 +67,7 @@ type AppointmentAction =
 const appointmentReducer = (state: AppointmentState, action: AppointmentAction): AppointmentState => {
   switch (action.type) {
     case 'BOOK_APPOINTMENT':
+      console.log('Booking appointment:', action.payload);
       return { ...state, appointments: [...state.appointments, action.payload] };
     case 'CANCEL_APPOINTMENT':
       return {
@@ -94,10 +95,10 @@ const appointmentReducer = (state: AppointmentState, action: AppointmentAction):
   }
 };
 
-// Mock data
+// Mock data - Updated dates to be more recent
 const mockDoctors: Doctor[] = [
   {
-    id: '1',
+    id: '2',
     name: 'Dr. Sarah Wilson',
     specialization: 'Cardiology',
     experience: 8,
@@ -106,13 +107,13 @@ const mockDoctors: Doctor[] = [
     consultationFee: 200,
     about: 'Dr. Sarah Wilson is a board-certified cardiologist with over 8 years of experience in treating heart conditions.',
     availability: [
-      { date: '2024-06-05', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] },
-      { date: '2024-06-06', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] },
-      { date: '2024-06-07', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] }
+      { date: '2024-12-12', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] },
+      { date: '2024-12-13', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] },
+      { date: '2024-12-14', slots: ['09:00', '10:00', '11:00', '14:00', '15:00'] }
     ]
   },
   {
-    id: '2',
+    id: '3',
     name: 'Dr. Michael Chen',
     specialization: 'Dermatology',
     experience: 5,
@@ -121,13 +122,13 @@ const mockDoctors: Doctor[] = [
     consultationFee: 150,
     about: 'Dr. Michael Chen specializes in dermatological treatments and has extensive experience in skin care.',
     availability: [
-      { date: '2024-06-05', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] },
-      { date: '2024-06-06', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] },
-      { date: '2024-06-07', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] }
+      { date: '2024-12-12', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] },
+      { date: '2024-12-13', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] },
+      { date: '2024-12-14', slots: ['10:00', '11:00', '14:00', '15:00', '16:00'] }
     ]
   },
   {
-    id: '3',
+    id: '4',
     name: 'Dr. Emily Rodriguez',
     specialization: 'Pediatrics',
     experience: 12,
@@ -136,9 +137,9 @@ const mockDoctors: Doctor[] = [
     consultationFee: 180,
     about: 'Dr. Emily Rodriguez is a pediatrician with 12 years of experience in child healthcare.',
     availability: [
-      { date: '2024-06-05', slots: ['09:00', '10:00', '11:00', '14:00'] },
-      { date: '2024-06-06', slots: ['09:00', '10:00', '11:00', '14:00'] },
-      { date: '2024-06-07', slots: ['09:00', '10:00', '11:00', '14:00'] }
+      { date: '2024-12-12', slots: ['09:00', '10:00', '11:00', '14:00'] },
+      { date: '2024-12-13', slots: ['09:00', '10:00', '11:00', '14:00'] },
+      { date: '2024-12-14', slots: ['09:00', '10:00', '11:00', '14:00'] }
     ]
   }
 ];
@@ -155,6 +156,7 @@ export const AppointmentProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ...appointmentData,
       id: Date.now().toString()
     };
+    console.log('Creating appointment with data:', appointment);
     dispatch({ type: 'BOOK_APPOINTMENT', payload: appointment });
   };
 

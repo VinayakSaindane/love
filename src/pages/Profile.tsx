@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,7 +38,8 @@ const Profile = () => {
     dateOfBirth: user?.dateOfBirth || '',
     emergencyContact: user?.emergencyContact || '',
     bloodType: user?.bloodType || '',
-    allergies: user?.allergies || ''
+    allergies: user?.allergies || '',
+    profileImage: user?.profileImage || ''
   });
 
   // Password change state
@@ -181,7 +181,7 @@ const Profile = () => {
                 {/* Profile Picture */}
                 <div className="flex items-center gap-6">
                   <Avatar className="w-24 h-24">
-                    <AvatarImage src={profileData.profileImage || user?.profileImage} />
+                    <AvatarImage src={profileData.profileImage} />
                     <AvatarFallback className="text-2xl">
                       {user?.name?.charAt(0) || 'U'}
                     </AvatarFallback>

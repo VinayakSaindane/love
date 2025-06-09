@@ -20,10 +20,13 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: Omit<User, 'id'> & { password: string }) => Promise<void>;
   updateProfile: (userData: Partial<User>) => void;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,8 +36,8 @@ const mockUsers: (User & { password: string })[] = [
   {
     id: '1',
     name: 'John Doe',
-    email: 'patient@example.com',
-    password: 'password123',
+    email: 'patient@demo.com',
+    password: 'password',
     role: 'patient',
     phone: '+1 234 567 8900',
     address: '123 Main St, City, State 12345',
@@ -47,8 +50,8 @@ const mockUsers: (User & { password: string })[] = [
   {
     id: '2',
     name: 'Dr. Sarah Wilson',
-    email: 'doctor@example.com',
-    password: 'password123',
+    email: 'doctor@demo.com',
+    password: 'password',
     role: 'doctor',
     phone: '+1 234 567 8902',
     specialization: 'Cardiology',
@@ -60,14 +63,20 @@ const mockUsers: (User & { password: string })[] = [
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const login = async (email: string, password: string): Promise<void> => {
-    const foundUser = mockUsers.find(u => u.email === email && u.password === password);
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-    } else {
-      throw new Error('Invalid credentials');
+    setIsLoading(true);
+    try {
+      const foundUser = mockUsers.find(u => u.email === email && u.password === password);
+      if (foundUser) {
+        const { password: _, ...userWithoutPassword } = foundUser;
+        setUser(userWithoutPassword);
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,12 +85,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const register = async (userData: Omit<User, 'id'> & { password: string }): Promise<void> => {
-    const { password, ...userWithoutPassword } = userData;
-    const newUser: User = {
-      ...userWithoutPassword,
-      id: Date.now().toString()
-    };
-    setUser(newUser);
+    setIsLoading(true);
+    try {
+      const { password, ...userWithoutPassword } = userData;
+      const newUser: User = {
+        ...userWithoutPassword,
+        id: Date.now().toString()
+      };
+      setUser(newUser);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateProfile = (userData: Partial<User>) => {
@@ -90,8 +104,31 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const resetPassword = async (email: string): Promise<void> => {
+    setIsLoading(true);
+    try {
+      // Simulate password reset
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const userExists = mockUsers.some(u => u.email === email);
+      if (!userExists) {
+        throw new Error('User not found');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, updateProfile }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated: !!user,
+      isLoading,
+      login, 
+      logout, 
+      register, 
+      updateProfile,
+      resetPassword
+    }}>
       {children}
     </AuthContext.Provider>
   );
